@@ -14,7 +14,7 @@ var MarvelComicFinder = ( function( $ ) {
     var listToReturn = [];
     for (var m in listA){
       for (var n in listB){
-        if (listA[m].id === listB[n].id){
+        if (listA[m].getId() === listB[n].getId()){
           listToReturn.push(listA[m]);
         }
       }
@@ -39,12 +39,7 @@ var MarvelComicFinder = ( function( $ ) {
 
   function generateCharacterOptions() {
     var myChars = api.characters()
-    var toPass = [];
-    for (var i in myChars){
-      var c = new Character(myChars[i]);
-      toPass.push(c);
-    }
-    MarvelComicFinderView.addCharacters(toPass);
+    MarvelComicFinderView.addCharacters(myChars);
   }
 
   function init(){
@@ -111,9 +106,9 @@ var MarvelComicFinderView = ( function( $ ) {
     $("#resultados").find("tbody").html("");
     for (var i in comicList) {
       var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
-      $newElem.find(".id").text(comicList[i].id);
-      $newElem.find(".title").text(comicList[i].title);
-      $newElem.find(".characters").text(comicList[i].characters.join(", "));
+      $newElem.find(".id").text(comicList[i].getId());
+      $newElem.find(".title").text(comicList[i].getTitle());
+      $newElem.find(".characters").text(comicList[i].getCharacters().join(", "));
       $("#resultados").find("tbody").append($newElem);
     }
   }
@@ -125,18 +120,3 @@ var MarvelComicFinderView = ( function( $ ) {
   }
 
 } ) ( $ );
-
-////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-function Character(data){
-  this._id = data.id;
-  this._name = data.name;
-}
-
-Character.prototype.getId = function(){
-  return this._id;
-};
-
-Character.prototype.getName = function() {
-  return this._name;
-};
