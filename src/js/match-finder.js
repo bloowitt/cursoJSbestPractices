@@ -11,14 +11,29 @@ var MarvelComicFinder = ( function( $ ) {
   var _comics = []
 
   function _printComicList(){
-    for (var i in _comics){
-
+    for (var i in _comics) {
+      var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
+      $newElem.find(".id").text(_comics[i].id);
+      $newElem.find(".title").text(_comics[i].title);
+      $newElem.find(".characters").text(_comics[i].characters.join(", "));
+      $("#resultados").find("tbody").append($newElem);
     }
-    
+  }
+
+  function _intersect(listA, listB){
+    var listToReturn = [];
+    for (var m in listA){
+      for (var n in listB){
+        if (listA[m].id === listB[n].id){
+          listToReturn.push(listA[m]);
+        }
+      }
+    }
+    return listToReturn;
   }
 
   function _manageResult(data){
-    if (_comics.size() === 0){
+    if (_comics.length === 0){
       _comics = data;
     } else {
       _comics = _intersect(_comics, data);
@@ -52,8 +67,12 @@ var MarvelComicFinder = ( function( $ ) {
     });
 
     $('#boton-buscar').on('click', function(event){
-      event.preventDefault($('#personaje1').val(), $('#personaje2').val());
-      MarvelComicFinder.findComics($('#personaje1').val(), $('#personaje2').val());
+      if ($('#personaje1').val() === -1 || $('#personaje2').val() === -1){
+        alert("No has elegido alguno de los personajes");
+      } else {
+        event.preventDefault($('#personaje1').val(), $('#personaje2').val());
+        MarvelComicFinder.findComics($('#personaje1').val(), $('#personaje2').val());
+      }
     });
   }
 
