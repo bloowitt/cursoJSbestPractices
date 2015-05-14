@@ -43,26 +43,23 @@ var MarvelComicFinder = ( function( $ ) {
     var myChars = api.characters();
     var toReturn = [];
     for (var i in myChars) {
-      var newElemName = myChars[i]['name'];
-      var newElemId = myChars[i]['id'];
-      var newElem = "<option data-text='" + newElemName + "' value='" + newElemId + "'>" + newElemName + "</option>"
-      toReturn.push(newElem);
-
+      _view.appendOption(_view.getOption(myChars[i]['id'], myChars[i]['name']);
     }
     return toReturn;
   }
 
-  // Funciones que tocan interfaz
+  // View module takes charge of all the dom/jquery interactions
 
-  _view: {
-    appendOption: function(){
-
+  var _view =  {
+    appendOption: function(option){
+      $('#personaje1').append(option);
+      $('#personaje2').append(option);
     },
-    getOption: function(){
-
+    getOption: function(id, name){
+      return "<option value='" + id + "'>" + name + "</option>"
     }
   }
-  
+
   function _printComicList(){
     for (var i in _comics) {
       var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
@@ -79,7 +76,7 @@ var MarvelComicFinder = ( function( $ ) {
   }
 
   function init(){
-    $('#personaje1').append(MarvelComicFinder.generateCharacterOptions());
+    (MarvelComicFinder.generateCharacterOptions());
     $('#personaje2').append(MarvelComicFinder.generateCharacterOptions());
 
     $('#personaje1').on('change', function(event){
