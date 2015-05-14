@@ -10,15 +10,7 @@ $(document).on('ready', function () {
 var MarvelComicFinder = ( function( $ ) {
   var _comics = []
 
-  function _printComicList(){
-    for (var i in _comics) {
-      var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
-      $newElem.find(".id").text(_comics[i].id);
-      $newElem.find(".title").text(_comics[i].title);
-      $newElem.find(".characters").text(_comics[i].characters.join(", "));
-      $("#resultados").find("tbody").append($newElem);
-    }
-  }
+  // Funciones de negocio
 
   function _intersect(listA, listB){
     var listToReturn = [];
@@ -41,15 +33,40 @@ var MarvelComicFinder = ( function( $ ) {
     }
   }
 
-  function _clearResultList(){
-    _comics = [];
-    $("#resultados").find("tbody").html("");
-  }
-
   function findComics(firstChar, secondChar){
     _clearResultList();
     api.comics(firstChar, _manageResult);
     api.comics(secondChar, _manageResult);
+  }
+
+  function generateCharacterOptions() {
+    var myChars = api.characters();
+    var toReturn = [];
+    for (var i in myChars) {
+      var newElemName = myChars[i]['name'];
+      var newElemId = myChars[i]['id'];
+      var newElem = "<option data-text='" + newElemName + "' value='" + newElemId + "'>" + newElemName + "</option>"
+      toReturn.push(newElem);
+
+    }
+    return toReturn;
+  }
+
+  // Funciones que tocan interfaz
+
+  function _printComicList(){
+    for (var i in _comics) {
+      var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
+      $newElem.find(".id").text(_comics[i].id);
+      $newElem.find(".title").text(_comics[i].title);
+      $newElem.find(".characters").text(_comics[i].characters.join(", "));
+      $("#resultados").find("tbody").append($newElem);
+    }
+  }
+
+  function _clearResultList(){
+    _comics = [];
+    $("#resultados").find("tbody").html("");
   }
 
   function init(){
@@ -76,23 +93,11 @@ var MarvelComicFinder = ( function( $ ) {
     });
   }
 
-  function generateCharacterOptions() {
-    var myChars = api.characters();
-    var toReturn = [];
-    for (var i in myChars) {
-      var newElemName = myChars[i]['name'];
-      var newElemId = myChars[i]['id'];
-      var newElem = "<option data-text='" + newElemName + "' value='" + newElemId + "'>" + newElemName + "</option>"
-      toReturn.push(newElem);
-
-    }
-    return toReturn;
-  }
-
   return {
     generateCharacterOptions : generateCharacterOptions,
     findComics: findComics,
-    init: init
+    init: init,
+    testIntersect: _intersect
   };
 
 } )( $ );
