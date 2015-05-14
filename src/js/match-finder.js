@@ -54,6 +54,15 @@ var MarvelComicFinder = ( function( $ ) {
 
   // Funciones que tocan interfaz
 
+  _view: {
+    appendOption: function(){
+
+    },
+    getOption: function(){
+
+    }
+  }
+  
   function _printComicList(){
     for (var i in _comics) {
       var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
