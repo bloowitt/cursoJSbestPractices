@@ -10,8 +10,6 @@ $(document).on('ready', function () {
 var MarvelComicFinder = ( function( $ ) {
   var _comics = []
 
-  // Funciones de negocio
-
   function _intersect(listA, listB){
     var listToReturn = [];
     for (var m in listA){
@@ -29,74 +27,29 @@ var MarvelComicFinder = ( function( $ ) {
       _comics = data;
     } else {
       _comics = _intersect(_comics, data);
-      _printComicList();
+      MarvelComicFinderView.printComicList(_comics);
     }
   }
 
   function findComics(firstChar, secondChar){
-    _clearResultList();
+    _comics = [];
     api.comics(firstChar, _manageResult);
     api.comics(secondChar, _manageResult);
   }
 
   function generateCharacterOptions() {
-    var myChars = api.characters();
-    var toReturn = [];
-    for (var i in myChars) {
-      _view.appendOption(_view.getOption(myChars[i]['id'], myChars[i]['name']);
+    var myChars = api.characters()
+    var toPass = [];
+    for (var i in myChars){
+      var c = new Character(myChars[i]);
+      toPass.push(c);
     }
-    return toReturn;
-  }
-
-  // View module takes charge of all the dom/jquery interactions
-
-  var _view =  {
-    appendOption: function(option){
-      $('#personaje1').append(option);
-      $('#personaje2').append(option);
-    },
-    getOption: function(id, name){
-      return "<option value='" + id + "'>" + name + "</option>"
-    }
-  }
-
-  function _printComicList(){
-    for (var i in _comics) {
-      var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
-      $newElem.find(".id").text(_comics[i].id);
-      $newElem.find(".title").text(_comics[i].title);
-      $newElem.find(".characters").text(_comics[i].characters.join(", "));
-      $("#resultados").find("tbody").append($newElem);
-    }
-  }
-
-  function _clearResultList(){
-    _comics = [];
-    $("#resultados").find("tbody").html("");
+    MarvelComicFinderView.addCharacters(toPass);
   }
 
   function init(){
-    (MarvelComicFinder.generateCharacterOptions());
-    $('#personaje2').append(MarvelComicFinder.generateCharacterOptions());
-
-    $('#personaje1').on('change', function(event){
-      $('#personaje2').find("option:disabled").prop('disabled',false);
-      $('#personaje2').find("option[value='" + $('#personaje1').val() + "']").prop('disabled',true);
-    });
-
-    $('#personaje2').on('change', function(event){
-      $('#personaje1').find("option:disabled").prop('disabled',false);
-      $('#personaje1').find("option[value='" + $('#personaje2').val() + "']").prop('disabled',true);
-    });
-
-    $('#boton-buscar').on('click', function(event){
-      if ($('#personaje1').val() === -1 || $('#personaje2').val() === -1){
-        alert("No has elegido alguno de los personajes");
-      } else {
-        event.preventDefault($('#personaje1').val(), $('#personaje2').val());
-        MarvelComicFinder.findComics($('#personaje1').val(), $('#personaje2').val());
-      }
-    });
+    MarvelComicFinderView.setupViewElements();
+    MarvelComicFinder.generateCharacterOptions();
   }
 
   return {
@@ -107,3 +60,83 @@ var MarvelComicFinder = ( function( $ ) {
   };
 
 } )( $ );
+
+/////////////////\\\\\\\\\\\\\\\\\\\\\
+
+var MarvelComicFinderView = ( function( $ ) {
+  var $personaje1= null;
+  var $personaje2= null;
+
+  function setupViewElements(){
+    $personaje1 = $('#personaje1');
+    $personaje2 = $('#personaje2');
+    $personaje1.on('change', function(event){
+      $personaje2.find("option:disabled").prop('disabled',false);
+      $personaje2.find("option[value='" + $personaje1.val() + "']").prop('disabled',true);
+    });
+
+    $personaje2.on('change', function(event){
+      $personaje2.find("option:disabled").prop('disabled',false);
+      $personaje1.find("option[value='" + $personaje2.val() + "']").prop('disabled',true);
+    });
+
+    $('#boton-buscar').on('click', function(event){
+      if ($personaje1.val() === -1 || $personaje2.val() === -1){
+        alert("No has elegido alguno de los personajes");
+      } else {
+        event.preventDefault($personaje1.val(), $personaje2.val());
+        MarvelComicFinder.findComics($personaje1.val(), $personaje2.val());
+      }
+    });
+  }
+
+  function  _addOption(option){
+    $personaje1.append(option);
+    $personaje2.append(option);
+  }
+
+  function _getOption(id, name){
+    return "<option value='" + id + "'>" + name + "</option>"
+  }
+
+  function addCharacters(arrayCharacters){
+    for (var i in arrayCharacters){
+      _addOption(_getOption(arrayCharacters[i].getId(), arrayCharacters[i].getName()));
+    }
+  }
+
+
+
+  function  printComicList(comicList){
+    $("#resultados").find("tbody").html("");
+    for (var i in comicList) {
+      var $newElem = $("<tr><td class='id'></td><td class='title'></td><td class='characters'></td></tr>")
+      $newElem.find(".id").text(comicList[i].id);
+      $newElem.find(".title").text(comicList[i].title);
+      $newElem.find(".characters").text(comicList[i].characters.join(", "));
+      $("#resultados").find("tbody").append($newElem);
+    }
+  }
+
+  return {
+    printComicList: printComicList,
+    addCharacters: addCharacters,
+    setupViewElements: setupViewElements
+  }
+
+} ) ( $ );
+
+////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+function Character(data){
+  this._id = data.id;
+  this._name = data.name;
+}
+
+Character.prototype.getId = function(){
+  return this._id;
+};
+
+Character.prototype.getName = function() {
+  return this._name;
+};
