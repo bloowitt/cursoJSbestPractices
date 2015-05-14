@@ -4,9 +4,5 @@
 // If a character appears twice (Spiderman and Ultimate Spiderman, e.g.) the comic is printed twice
 
 $(document).on('ready', function () {
-  MarvelComicFinder.init();
+  window.marvel.MarvelComicFinder.init();
 });
-
-
-/////////////////\\\\\\\\\\\\\\\\\\\\\
-

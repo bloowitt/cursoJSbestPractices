@@ -1,5 +1,6 @@
 
-var MarvelComicFinder = ( function( $ ) {
+window.marvel = window.marvel || {};
+window.marvel.MarvelComicFinder = ( function( ) {
   var _comics = []
 
   function _intersect(listA, listB){
@@ -19,7 +20,7 @@ var MarvelComicFinder = ( function( $ ) {
       _comics = data;
     } else {
       _comics = _intersect(_comics, data);
-      MarvelComicFinderView.printComicList(_comics);
+      window.marvel.view.printComicList(_comics);
     }
   }
 
@@ -31,12 +32,12 @@ var MarvelComicFinder = ( function( $ ) {
 
   function generateCharacterOptions() {
     var myChars = api.characters()
-    MarvelComicFinderView.addCharacters(myChars);
+    window.marvel.view.addCharacters(myChars);
   }
 
   function init(){
-    MarvelComicFinderView.setupViewElements();
-    MarvelComicFinder.generateCharacterOptions();
+    window.marvel.view.setupViewElements();
+    generateCharacterOptions();
   }
 
   return {
@@ -46,4 +47,4 @@ var MarvelComicFinder = ( function( $ ) {
     testIntersect: _intersect
   };
 
-} )( $ );
+} )();

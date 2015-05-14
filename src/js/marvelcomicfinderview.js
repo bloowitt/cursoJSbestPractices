@@ -1,4 +1,5 @@
-var MarvelComicFinderView = ( function( $ ) {
+window.marvel = window.marvel || {};
+window.marvel.view = ( function( $ ) {
   var $personaje1= null;
   var $personaje2= null;
 
@@ -20,7 +21,7 @@ var MarvelComicFinderView = ( function( $ ) {
         alert("No has elegido alguno de los personajes");
       } else {
         event.preventDefault($personaje1.val(), $personaje2.val());
-        MarvelComicFinder.findComics($personaje1.val(), $personaje2.val());
+        window.marvel.MarvelComicFinder.findComics($personaje1.val(), $personaje2.val());
       }
     });
   }
